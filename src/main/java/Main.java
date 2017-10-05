@@ -1,9 +1,9 @@
+import channel.ChannelResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import youtube.channel.ChannelResponse;
 
 import java.io.IOException;
 
@@ -11,16 +11,26 @@ public class Main {
 
     public static void main(String[] args) throws UnirestException {
         initMapper();
-        ChannelResponse channelResponse = getObject();
-        System.out.println(channelResponse.items);
+        ChannelResponse channelResponse = get();
+
+        System.out.println(channelResponse.items.size());
     }
-    
-    
-    private static ChannelResponse getObject() throws UnirestException {
+
+    private static String getObject() throws UnirestException {
+        HttpResponse<String> response = Unirest.get("https://www.googleapis.com/youtube/v3/channels")
+                .queryString("key", "AIzaSyCPALiCXC-2GmLoJySc-AdyxW63vpSki6E")
+                .queryString("part", "snippet,contentDetails,statistics")
+                .queryString("id", "UC_x5XG1OV2P6uZZ5FSM9Ttw")
+                .asString();
+
+        return response.getBody();
+    }
+
+    private static ChannelResponse get() throws UnirestException {
         HttpResponse<ChannelResponse> response = Unirest.get("https://www.googleapis.com/youtube/v3/channels")
-                .queryString("key", "AIzaSyB-zElX81LyvRXRA5u1Gz8Rih2kUlojAhA")
-                .queryString("part", "snippet,statistics")
-                .queryString("channelId", "UC_x5XG1OV2P6uZZ5FSM9Ttw")
+                .queryString("key", "AIzaSyCPALiCXC-2GmLoJySc-AdyxW63vpSki6E")
+                .queryString("part", "snippet,contentDetails,statistics")
+                .queryString("id", "UC_x5XG1OV2P6uZZ5FSM9Ttw")
                 .asObject(ChannelResponse.class);
 
         return response.getBody();
